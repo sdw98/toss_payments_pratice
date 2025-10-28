@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+# ?????? ??
+toss:
+  payments:
+    client-key: test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm  # 테스트용 공개키
+    secret-key: test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6  # 테스트용 비밀키
+    api:
+      base-url: https://api.tosspayments.com/v1
