@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 주문</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>상품 주문하기</h1>
+
+    <form th:action="@{/checkout}" th:object="${paymentRequest}" method="post">
+        <div class="form-group">
+            <label for="orderName">상품명:</label>
+            <input type="text" id="orderName" th:field="*{orderName}"
+                   placeholder="주문할 상품명을 입력하세요" required>
+            <div class="error" th:if="${#fields.hasErrors('orderName')}" th:errors="*{orderName}"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">결제 금액 (원):</label>
+            <input type="number" id="amount" th:field="*{amount}"
+                   placeholder="결제할 금액을 입력하세요" min="1000" required>
+            <div class="error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></div>
+        </div>
+
+        <button type="submit">결제하기</button>
+    </form>
+</div>
+
+<script>
+    // 폼 검증 및 UX 개선
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const amountInput = document.getElementById('amount');
+        const orderNameInput = document.getElementById('orderName');
+
+        // 금액 입력 시 천단위 콤마 표시
+        amountInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            if (value) {
+                e.target.value = value;
+            }
+        });
+
+        // 폼 제출 전 검증
+        form.addEventListener('submit', function(e) {
+            const amount = parseInt(amountInput.value);
+            const orderName = orderNameInput.value.trim();
+
+            if (!orderName) {
+                alert('상품명을 입력해주세요.');
+                e.preventDefault();
+                orderNameInput.focus();
+                return false;
+            }
+
+            if (!amount || amount < 1000) {
+                alert('결제 금액은 최소 1,000원 이상이어야 합니다.');
+                e.preventDefault();
+                amountInput.focus();
+                return false;
+            }
+
+            // 확인 메시지
+            if (!confirm(`${orderName}\n금액: ${amount.toLocaleString()}원\n\n결제를 진행하시겠습니까?`)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+</script>
+</body>
+</html>

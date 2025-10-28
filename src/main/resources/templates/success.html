@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 완료</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .success-icon {
+            font-size: 64px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .payment-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .payment-details p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .payment-details strong {
+            display: inline-block;
+            width: 100px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .receipt-link {
+            background-color: #28a745;
+            margin-left: 10px;
+        }
+        .receipt-link:hover {
+            background-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="success-icon">✅</div>
+    <h1>결제가 완료되었습니다!</h1>
+
+    <div class="payment-details">
+        <p><strong>주문번호:</strong> <span th:text="${payment.orderId}"></span></p>
+        <p><strong>상품명:</strong> <span th:text="${payment.orderName}"></span></p>
+        <p><strong>결제금액:</strong> <span th:text="${#numbers.formatInteger(payment.amount, 0, 'COMMA')}"></span>원</p>
+        <p><strong>결제방법:</strong> <span th:text="${payment.method}"></span></p>
+        <p><strong>결제상태:</strong> <span th:text="${payment.status.description}"></span></p>
+        <p th:if="${payment.approvedAt}"><strong>승인시간:</strong>
+            <span th:text="${#temporals.format(payment.approvedAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+        </p>
+    </div>
+
+    <div>
+        <a href="/" class="button">처음으로</a>
+        <a th:if="${payment.receiptUrl}" th:href="${payment.receiptUrl}"
+           target="_blank" class="button receipt-link">영수증 보기</a>
+    </div>
+</div>
+
+<script>
+    // URL 정리: 쿼리 파라미터 제거 (보안상 paymentKey 등을 노출하지 않기 위함)
+    if (window.location.search) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    console.log('결제 승인 완료');
+</script>
+</body>
+</html>
