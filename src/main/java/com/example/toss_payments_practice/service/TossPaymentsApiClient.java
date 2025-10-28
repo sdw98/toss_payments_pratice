@@ -44,6 +44,8 @@ public class TossPaymentsApiClient {
                     .bodyToMono(TossPaymentResponse.class)
                     .block();
 
+            log.info("토스페이먼스 결제 승인 성공: {}", response);
+            return response;
         } catch (Exception e) {
             log.error("토스페이먼츠 API 호출 실패: {}", e.getMessage());
             throw new RuntimeException("결제 승인 API 호출 실패: " + e.getMessage());
